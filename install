@@ -125,6 +125,7 @@ su - www-data -c /opt/graphite/bin/build-index.sh
 usermod www-data --shell /usr/sbin/nologin
 
 # Install Grafana
+apt-get install -y apt-transport-https 
 echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' > /etc/apt/sources.list.d/grafana.list
 curl https://packagecloud.io/gpg.key | apt-key add -
 apt-get update -y
