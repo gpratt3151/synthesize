@@ -140,7 +140,7 @@ curl -X POST -H 'Content-Type: application/json' -u 'admin:admin' \
   "http://127.0.0.1:3000/api/dashboards/import"
 
 # Start our processes
-update-rc.d carbon-cache defaults
+#update-rc.d carbon-cache defaults
 service carbon-cache start
 service memcached start
 service collectd start
