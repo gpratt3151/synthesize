@@ -46,8 +46,8 @@ if [ -z $GRAPHITE_RELEASE ]; then
     GRAPHITE_RELEASE='1.0.0'
 fi
 
-if [[ ! $UBUNTU_RELEASE =~ 'Ubuntu 14.04' ]]; then
-  echo "Sorry, this is only supported for Ubuntu Linux 14.04."
+if [[ ! $UBUNTU_RELEASE =~ 'Debian GNU/Linux 8.8 (jessie)' ]]; then
+  echo "Sorry, this is only supported for Turnkey Linux"
   exit 1
 fi
 if [[ -d $GRAPHITE_HOME ]]; then
@@ -58,8 +58,11 @@ fi
 # Update apt since the vagrant image might be old
 apt-get update -y
 
-# Install package dependencies from apt
-RUNLEVEL=1 apt-get install -y libcairo2-dev libffi-dev pkg-config python-dev python-pip fontconfig apache2 libapache2-mod-wsgi git-core collectd memcached gcc g++ make libtool automake
+# Get aptitude as it's better at handling dependencies than apt-get
+apt-get install aptitude
+
+# Install package dependencies from aptitude
+RUNLEVEL=1 aptitude install -y libcairo2-dev libffi-dev pkg-config python-dev python-pip fontconfig apache2 libapache2-mod-wsgi git-core collectd memcached gcc g++ make libtool automake
 
 # Download source repositories for Graphite/Carbon/Whisper and Statsite
 cd /usr/local/src
@@ -117,7 +120,9 @@ chmod +x /etc/init.d/carbon-cache
 # Setup hourly cron to rebuild Graphite index
 cp ${SYNTHESIZE_HOME}/templates/graphite/cron/build-index /etc/cron.hourly/graphite-build-index
 chmod 755 /etc/cron.hourly/graphite-build-index
-sudo -u www-data /opt/graphite/bin/build-index.sh
+usermod www-data --shell /bin/bash
+su - www-data -c /opt/graphite/bin/build-index.sh
+usermod www-data --shell /usr/sbin/nologin
 
 # Install Grafana
 echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' > /etc/apt/sources.list.d/grafana.list
