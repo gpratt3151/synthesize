@@ -126,6 +126,7 @@ su - www-data -c /opt/graphite/bin/build-index.sh
 usermod www-data --shell /usr/sbin/nologin
 
 # Install Grafana
+apt-get install -y apt-transport-https 
 echo 'deb https://packagecloud.io/grafana/stable/debian/ wheezy main' > /etc/apt/sources.list.d/grafana.list
 curl https://packagecloud.io/gpg.key | apt-key add -
 apt-get update -y
@@ -140,7 +141,7 @@ curl -X POST -H 'Content-Type: application/json' -u 'admin:admin' \
   "http://127.0.0.1:3000/api/dashboards/import"
 
 # Start our processes
-update-rc.d carbon-cache defaults
+#update-rc.d carbon-cache defaults
 service carbon-cache start
 service memcached start
 service collectd start
